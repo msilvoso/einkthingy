@@ -1,3 +1,4 @@
+import logging
 import time
 
 
@@ -14,11 +15,13 @@ class Timer:
 
     def over(self):
         now = time.time()
-        return self.stop + self.wait < now
+        o = self.stop + self.wait < now
+        if o:
+            logging.debug("Timer with with time {0} : over with result {1}".format(self.wait, o))
+        return o
 
     def over_and_restart(self):
-        now = time.time()
-        over = self.stop + self.wait < now
-        if over:
+        o = self.over()
+        if o:
             self.start(self.wait)
-        return over
+        return o
