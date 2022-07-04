@@ -27,6 +27,8 @@ display = Display()
 # timers and states
 # avoid calling internet on or off twice
 internet_button_timer = Timer(1)
+# refresh every hour
+hourly_timer = Timer(3600)
 # is the internet on status
 state = EpaperState()
 state.states["internet_state"] = InternetRefresh()
@@ -35,7 +37,7 @@ state.states["trash_state"] = TrashRefresh("/usr/local/share/VDL.ics")
 
 
 def button1(channel):
-    state.force_refresh()
+    state.refresh(True)
     state.make_dirty()
 
 
@@ -70,7 +72,7 @@ def infinite_loop():
     try:
         logging.info("Ready")
         while True:
-            if state.dirty():
+            if state.dirty() or hourly_timer.over_and_restart():
                 display.display(state)
             state.refresh()
             time.sleep(1)
