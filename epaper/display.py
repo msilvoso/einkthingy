@@ -43,11 +43,11 @@ class Display:
             if state.states["internet_state"].state:
                 draw.text((0, 0), "Internet is on", font=self.font24, fill=self.epd.GRAY4)
                 logging.debug("Display: Internet is on")
-                draw.text((self.epd.height - 30, 16), "off", font=self.font18, fill=self.epd.GRAY4)
+                draw.text((self.epd.height - 40, 5), "off", font=self.font18, fill=self.epd.GRAY4)
             else:
                 draw.text((0, 0), "Internet is off", font=self.font24, fill=self.epd.GRAY4)
                 logging.debug("Display: Internet is off")
-                draw.text((self.epd.height - 30, 16), "on", font=self.font18, fill=self.epd.GRAY4)
+                draw.text((self.epd.height - 40, 5), "on", font=self.font18, fill=self.epd.GRAY4)
             draw.line((self.epd.height, 0, self.epd.height - 16, 0), fill=self.epd.GRAY4, width=5)
             draw.line((self.epd.height, 0, self.epd.height, 16), fill=self.epd.GRAY4, width=5)
             draw.line((self.epd.height, 0, self.epd.height - 16, 16), fill=self.epd.GRAY4, width=5)
@@ -59,11 +59,13 @@ class Display:
         draw.text((150, 151), state.states["trash_state"].state[1], font=self.font24, fill=self.epd.GRAY4)
         # shutdown timer button
         if state.states["shutdown_timer_enabled"].state:
-            draw.text((220, 91), "leave", font=self.font18, fill=self.epd.GRAY4)
-            draw.text((230, 110), "on", font=self.font18, fill=self.epd.GRAY4)
+            draw.text((220, 81), "leave", font=self.font18, fill=self.epd.GRAY4)
+            draw.text((230, 100), "on", font=self.font18, fill=self.epd.GRAY4)
         else:
-            draw.text((220, 91), "auto", font=self.font18, fill=self.epd.GRAY4)
-            draw.text((230, 110), "off", font=self.font18, fill=self.epd.GRAY4)
+            draw.text((220, 81), "auto", font=self.font18, fill=self.epd.GRAY4)
+            draw.text((230, 100), "off", font=self.font18, fill=self.epd.GRAY4)
+        # shutdown time
+        draw.text((220, 35), state.states["shutdown_time"].state, font=self.font18, fill=self.epd.GRAY4)
 
         # Refresh
         draw.text((200, 132), "refresh", font=self.font18, fill=self.epd.GRAY4)

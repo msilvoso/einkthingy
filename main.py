@@ -7,6 +7,7 @@ from waveshare_epd import epd2in7
 from epaper.internetrefresh import InternetRefresh
 from epaper.trashrefresh import TrashRefresh
 from epaper.shutdowntimerrefresh import ShutdownTimerRefresh
+from epaper.stimerefresh import STimeRefresh
 from epaper.timer import Timer
 from epaper.state import EpaperState
 from epaper.display import Display
@@ -37,7 +38,10 @@ state.states["internet_state"] = InternetRefresh()
 state.states["trash_state"] = TrashRefresh("/usr/local/share/VDL.ics")
 # the shutdown timer
 state.states["shutdown_timer_enabled"] = ShutdownTimerRefresh()
-
+# shutdown time
+state.states["shutdown_time"] = STimeRefresh()
+# loop sleep time
+loop_sleep_time = 1
 
 def button1(channel):
     state.refresh(True)
@@ -51,6 +55,7 @@ def button2(channel):
         os.system("/usr/bin/systemctl disable shutdownfw.timer --now")
         return
     os.system("/usr/bin/systemctl enable shutdownfw.timer --now")
+
 
 def button3(channel):
     display.display(state, "Only key4 works")
@@ -79,10 +84,12 @@ def infinite_loop():
     try:
         logging.info("Ready")
         while True:
+            global loop_sleep_time
             if state.dirty() or hourly_timer.over_and_restart():
                 display.display(state)
             state.refresh()
-            time.sleep(1)
+            time.sleep(loop_sleep_time)
+            loop_sleep_time = 1
 
     except KeyboardInterrupt:
         logging.info("ctrl + c:")
