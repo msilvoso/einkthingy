@@ -28,3 +28,15 @@ class STimeRefresh:
         shutdown_time = re.search(pattern=r'\d{2}:\d{2}', string=contents)
         logging.debug("Shutdown time: {time}".format(time=shutdown_time[0]))
         return shutdown_time[0]
+
+    @staticmethod
+    def set_shutdown_time(shutdown_time):
+        f = open("/etc/systemd/system/shutdownfw.timer", "r")
+        contents = f.read()
+        f.close()
+        contents = re.sub(pattern=r'\d{2}:\d{2}', repl=shutdown_time, string=contents)
+        logging.debug("Shutdown time set to: {time}".format(time=shutdown_time))
+        f = open("/etc/systemd/system/shutdownfw.timer", "w")
+        f.write(contents)
+        f.close()
+        return

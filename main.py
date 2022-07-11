@@ -8,6 +8,7 @@ from epaper.internetrefresh import InternetRefresh
 from epaper.trashrefresh import TrashRefresh
 from epaper.shutdowntimerrefresh import ShutdownTimerRefresh
 from epaper.stimerefresh import STimeRefresh
+from epaper.stimechange import STimeChange
 from epaper.timer import Timer
 from epaper.state import EpaperState
 from epaper.display import Display
@@ -40,8 +41,9 @@ state.states["trash_state"] = TrashRefresh("/usr/local/share/VDL.ics")
 state.states["shutdown_timer_enabled"] = ShutdownTimerRefresh()
 # shutdown time
 state.states["shutdown_time"] = STimeRefresh()
-# loop sleep time
-loop_sleep_time = 1
+# shutdown time change
+state.shutdown_time_change = STimeChange()
+
 
 def button1(channel):
     state.refresh(True)
@@ -58,8 +60,7 @@ def button2(channel):
 
 
 def button3(channel):
-    display.display(state, "Only key4 works")
-
+    state.shutdown_time_change.add_10_min()
 
 def button4(channel):
     if not internet_button_timer.over():
@@ -84,12 +85,11 @@ def infinite_loop():
     try:
         logging.info("Ready")
         while True:
-            global loop_sleep_time
+            state.shutdown_time_change.reload_shutdown_time(state.states["shutdown_time"])
             if state.dirty() or hourly_timer.over_and_restart():
                 display.display(state)
             state.refresh()
-            time.sleep(loop_sleep_time)
-            loop_sleep_time = 1
+            time.sleep(1)
 
     except KeyboardInterrupt:
         logging.info("ctrl + c:")
